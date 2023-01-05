@@ -25,6 +25,8 @@
 #include "GameScene.h"
 #include "PauseScene.h"
 #include "GameOverScene.h"
+#include "physics/CCPhysicsBody.h"
+#include "physics/CCPhysicsJoint.h"
 
 USING_NS_CC;
 
@@ -72,7 +74,13 @@ bool GameScreen::init()
     auto action = Place::create(Point(20, 160));
     mySprite->runAction(action);
     //********************************************************************************************************
-// create a static PhysicsBody
+auto edgeBody = PhysicsBody::createEdgeBox(visibleSize, PHYSICSBODY_MATERIAL_DEFAULT, 30);
+
+    auto edgeNode = Node::create();
+    edgeNode->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height * 0.51 + origin.y));
+    edgeNode->setPhysicsBody(edgeBody);
+
+    this->addChild(edgeNode);
    
     //********************************************************************************************************
     auto eventListener = EventListenerKeyboard::create();
@@ -111,7 +119,7 @@ bool GameScreen::init()
 
     this->_eventDispatcher->addEventListenerWithSceneGraphPriority(eventListener, mySprite);
 //************************************************************************************************************
-   /* auto body = PhysicsBody::createBox(mySprite->getContentSize());
+   auto body = PhysicsBody::createBox(mySprite->getContentSize());
     mySprite->setPhysicsBody(body);
 
     // Set up key press event listener
@@ -121,7 +129,7 @@ bool GameScreen::init()
             jump();
         }
     };
-    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyListener, this);*/
+    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyListener, this);
 
     return true;
 }
@@ -140,9 +148,9 @@ void GameScreen::GoToGameOverScene(cocos2d::Ref* pSender)
     (1.0, scene));
 }
 
-/*void GameScreen::jump()
+void GameScreen::jump()
 {
     // Apply impulse force to character's physics body
     auto body = mySprite->getPhysicsBody();
     body->applyImpulse(cocos2d::Vec2(0, 50));
-};*/
+};
